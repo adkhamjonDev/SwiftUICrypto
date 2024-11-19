@@ -13,4 +13,4 @@ This series is ideal for developers who wish to deepen their understanding of Sw
 
 YouTube Playlist
 Explore the complete tutorial series on YouTube:
-Crypto App with SwiftUI by Swiftful Thinking
+[Crypto App with SwiftUI by Swiftful Thinking](https://www.youtube.com/playlist?list=PLwvDm4Vfkdphbc3bgy_LpLRQ9DDfFGcFu)
