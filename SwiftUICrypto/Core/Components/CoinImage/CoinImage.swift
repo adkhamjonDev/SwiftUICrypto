@@ -10,8 +10,8 @@ import SwiftUI
 struct CoinImage: View {
     @State var vm:CoinImageViewModel
     
-    init(imageUrl: String) {
-        _vm = State(wrappedValue: CoinImageViewModel(urlString: imageUrl))
+    init(imageUrl: String,imageName:String) {
+        _vm = State(wrappedValue: CoinImageViewModel(urlString: imageUrl,imageName: imageName))
     }
     
     var body: some View {
@@ -33,6 +33,6 @@ struct CoinImage: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    CoinImage(imageUrl:  DeveloperPreview.instance.coin.image)
+    CoinImage(imageUrl:  DeveloperPreview.instance.coin.image,imageName: DeveloperPreview.instance.coin.id)
         .padding()
 }

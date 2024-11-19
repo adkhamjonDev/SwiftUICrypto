@@ -20,9 +20,9 @@ import Combine
     
     private var cancellable = Set<AnyCancellable>()
     
-    init(urlString: String) {
+    init(urlString: String,imageName:String) {
         self.imageUrl = urlString
-        self.coinImageService = CoinImageService(urlString: urlString)
+        self.coinImageService = CoinImageService(urlString: urlString, imageName: imageName)
         addSubscriber()
     }
     

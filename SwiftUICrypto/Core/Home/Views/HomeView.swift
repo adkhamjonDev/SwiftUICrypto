@@ -13,6 +13,8 @@ struct HomeView:View {
     
     @Environment(HomeViewModel.self) private var viewModel
     
+    @State var searchText:String = ""
+    
     var body: some View{
         ZStack{
 
@@ -24,6 +26,8 @@ struct HomeView:View {
             VStack{
                 
                 homeHeader
+                
+                SearchbarView(searchText: $searchText)
                 
                 columnTitles
                 

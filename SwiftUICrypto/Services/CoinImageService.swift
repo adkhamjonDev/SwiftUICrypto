@@ -16,13 +16,31 @@ class CoinImageService {
     
     private let imageUrl: String
     
-    init(urlString:String) {
+    private let fileManager = LocalFileManager.instance
+    
+    private let folderName = "coin_images"
+    
+    private let imageName: String
+    
+    init(urlString:String,imageName:String) {
         self.imageUrl = urlString
-        getCoinImage(urlString: urlString)
+        self.imageName = imageName
+        getCoinImage()
     }
     
-    private func getCoinImage(urlString: String) {
-        guard let url = URL(string: urlString) else { return }
+    private func getCoinImage() {
+        if let savedImage = fileManager.getImage(imageName: imageName, folderName: folderName) {
+            image = savedImage
+            print("Retrieved image from File manager!")
+        } else {
+            
+            print("Downloading image now")
+            downloadCoinImage()
+        }
+    }
+    
+    private func downloadCoinImage() {
+        guard let url = URL(string: imageUrl) else { return }
     
         imageSubscription = NetworkingManager.download(url: url)
             .tryMap( { (data) -> UIImage? in
@@ -33,8 +51,11 @@ class CoinImageService {
                 NetworkingManager.handleCompletion(completion: completion)
             
             } receiveValue: { [weak self] (returnedImage) in
-                self?.image = returnedImage
-                self?.imageSubscription?.cancel()
+                
+                guard let self = self, let downloadedImage = returnedImage else { return }
+                self.image = downloadedImage
+                self.imageSubscription?.cancel()
+                self.fileManager.saveImage(image: downloadedImage, imageName: self.imageName, folderName: self.folderName)
             }
     }
 }
