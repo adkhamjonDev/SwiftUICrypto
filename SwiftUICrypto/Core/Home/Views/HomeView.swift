@@ -14,8 +14,8 @@ struct HomeView:View {
     @Environment(HomeViewModel.self) private var viewModel
     
     @State var searchText:String = ""
-    
     var body: some View{
+       
         ZStack{
 
             // background
@@ -26,6 +26,10 @@ struct HomeView:View {
             VStack{
                 
                 homeHeader
+                
+                HomeStatsView(
+                    showPortfolio: $showPortfolio
+                )
                 
                 SearchbarView(searchText: $searchText)
                 
