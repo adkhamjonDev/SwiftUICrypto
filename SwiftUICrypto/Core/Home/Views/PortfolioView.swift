@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PortfolioView: View {
 
-    @Environment(HomeViewModel.self) private var viewModel
+    @EnvironmentObject private var viewModel:HomeViewModel
     
     @State private var selectedCoin: CoinModel? = nil
     
@@ -20,7 +20,7 @@ struct PortfolioView: View {
         NavigationStack{
             ScrollView{
                 VStack(alignment: .leading,spacing: 0){
-                    SearchbarView(searchText: .constant(""))
+                    SearchbarView(searchText: $viewModel.searchText)
                     coinLogoList
                     if selectedCoin != nil {
                         portfolioInputSection
@@ -28,7 +28,7 @@ struct PortfolioView: View {
                 }
             }
             .navigationTitle("Edit Portfolio")
-            .toolbar {
+            .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading){
                     XMarkButton()
                 }
@@ -36,8 +36,12 @@ struct PortfolioView: View {
                 ToolbarItem(placement: .navigationBarTrailing){
                     trailingNavBarItems
                 }
-                
-            }
+            })
+            .onChange(of: "", perform: { newValue in
+                if newValue == "" {
+                    removeSelectedCoin()
+                }
+            })
         }
         
     }
@@ -45,7 +49,7 @@ struct PortfolioView: View {
 
 #Preview {
     PortfolioView()
-        .environment(DeveloperPreview.instance.homeVm)
+        .environmentObject(DeveloperPreview.instance.homeVm)
 }
 
 
@@ -53,14 +57,14 @@ extension PortfolioView {
     private var coinLogoList: some View {
         ScrollView(.horizontal,showsIndicators: false){
             LazyHStack(spacing: 10){
-                ForEach(viewModel.allCoins){ coin in
+                ForEach(viewModel.searchText.isEmpty ? viewModel.portfolioCoins : viewModel.allCoins ){ coin in
                     
                     CoinLogoView(coin: coin)
                         .frame(width: 75)
                         .padding(4)
                         .onTapGesture {
                             withAnimation(.easeIn){
-                                selectedCoin = coin
+                                updateSelectedCoin(coinModel: coin)
                             }
                         }
                         .background(
@@ -75,6 +79,18 @@ extension PortfolioView {
         }
         .frame(height: 120)
         .padding(.leading, 4)
+    }
+    
+    private func updateSelectedCoin(coinModel:CoinModel) {
+        selectedCoin = coinModel
+        
+        if let portfolioCoin = viewModel.portfolioCoins.first(where: { $0.id == coinModel.id }),
+           let amount = portfolioCoin.currentHoldings{
+            quantityText = "\(amount)"
+        } else {
+            quantityText = ""
+        }
+        
     }
     
     
@@ -120,7 +136,7 @@ extension PortfolioView {
                 .opacity(showCheckMark ? 1.0 : 0.0)
             Button(
                 action: {
-                    
+                    saveButtonPressed()
                 }, label : {
                     Text("save".uppercased())
                 }
@@ -134,14 +150,22 @@ extension PortfolioView {
     
     private func saveButtonPressed() {
         
-        guard let coin = selectedCoin else { return }
+        guard
+            let coin = selectedCoin,
+            let amount = Double(quantityText)
+        else {
+            return
+        }
         
+    
         // save portfolio
-        
+    
+        viewModel.updatePortfolio(coin: coin, amount: amount)
         // show checkmark
         
         withAnimation(.easeIn){
             showCheckMark = true
+            removeSelectedCoin()
         }
         
         // hide keyboard

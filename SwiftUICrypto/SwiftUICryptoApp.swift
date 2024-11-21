@@ -9,8 +9,7 @@ import SwiftUI
 
 @main
 struct SwiftUICryptoApp: App {
-    @State private var vm:HomeViewModel = HomeViewModel()
-    
+    @StateObject private var vm = HomeViewModel()
     init(){
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(Color.theme.accent)]
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(Color.theme.accent)]
@@ -21,7 +20,7 @@ struct SwiftUICryptoApp: App {
                 HomeView()
                     .navigationBarHidden(true)
             }
-            .environment(vm)
+            .environmentObject(vm)
         }
     }
 }

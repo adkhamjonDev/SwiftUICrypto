@@ -52,10 +52,8 @@ struct ChartView: View {
     }
 }
 
-struct ChartView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChartView(coin: dev.coin)
-    }
+#Preview {
+    ChartView(coin: DeveloperPreview.instance.coin)
 }
 
 extension ChartView {
