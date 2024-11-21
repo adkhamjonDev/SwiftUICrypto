@@ -5,7 +5,9 @@
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIImageName</key>
-		<string></string>
+		<string>logo-transparent</string>
+		<key>UIColorName</key>
+		<string>LaunchBackgroundColor</string>
 	</dict>
 </dict>
 </plist>
