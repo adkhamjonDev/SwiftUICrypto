@@ -12,7 +12,7 @@ struct HomeView:View {
     @State private var showPortfolio: Bool = false
     
     @Environment(HomeViewModel.self) private var viewModel
-    
+    @State private var showPortfolioView:Bool = false // new sheeet
     @State var searchText:String = ""
     var body: some View{
        
@@ -20,6 +20,10 @@ struct HomeView:View {
 
             // background
             Color.theme.background.ignoresSafeArea()
+                .sheet(isPresented: $showPortfolioView){
+                    PortfolioView()
+                        .environment(viewModel)
+                }
             
             // content layer
             
@@ -66,6 +70,11 @@ extension HomeView{
         HStack{
             CircleButtonView(iconName: showPortfolio ? "plus" : "info")
                 .animation(.none,value: UUID())
+                .onTapGesture {
+                    if showPortfolio {
+                        showPortfolioView.toggle()
+                    }
+                }
                 .background(
                     CircleButtonAnimationView(animate: $showPortfolio)
                 )
